@@ -6,17 +6,19 @@
 //  Copyright © 2020 Milton. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
 enum Constants {
+    static let failedImage = UIImage(named: "Failed")!
     static let textSearhFormat = "https://maps.googleapis.com/maps/api/place/textsearch/output?parameters"
     static let nearByPlace: [NearByPlaces] = [.gasStation, .aquarium, .atm, .bakery, .bank, .bar, .gym, .airport]
 }
 enum GooglePlaces {
-    static let googleKey = "API key"
+    static let googleKey = "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
     static let BaseURL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
     static let parameters = [
         "query": "",
-        "key": "API key"
+        "key": "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
     ]
 }
 

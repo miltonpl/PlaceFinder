@@ -24,6 +24,7 @@ class IOSPlaceViewController: UIViewController {
          searchC.delegate = self
          return searchC
      }()
+    
     var coordinate: CLLocationCoordinate2D?
     var autocompleteResult = [MKLocalSearchCompletion]()
 
@@ -48,7 +49,9 @@ class IOSPlaceViewController: UIViewController {
     }
     lazy var locationHandler = LocationHandler(delegate: self)
     var viewModel: PlaceViewModelProtocol = ViewModel()
-    
+    lazy var annotationHandler: AnnotationHandler = {
+        return AnnotationHandler()
+    }()
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +60,16 @@ class IOSPlaceViewController: UIViewController {
         self.locationHandler.getUserLocation()
         self.searchView.isHidden = true
         self.setupSettingAction()
+        self.registerMapAnnotationViews()
     }
+    
+    private func registerMapAnnotationViews() {
+        self.mapView.register(GasStationAnnotationView.self, forAnnotationViewWithReuseIdentifier: "GasStationAnnotationView")
+        self.mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: "CustomAnnotationView")
+        self.mapView.register(ATMAnnotationView.self, forAnnotationViewWithReuseIdentifier: "ATMAnnotationView")
+         self.mapView.register(AquariumAnnotationView.self, forAnnotationViewWithReuseIdentifier: "AquariumAnnotationView")
+    }
+    
     func setCamara() {
         let coordinate = self.mapView.userLocation.coordinate
         print("Set Camara", coordinate)
@@ -65,8 +77,25 @@ class IOSPlaceViewController: UIViewController {
         let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: radius, longitudinalMeters: radius)
         let camaryBoundry = MKMapView.CameraBoundary(coordinateRegion: region)
         self.mapView.setCameraBoundary(camaryBoundry, animated: true)
-        
     }
+    
+    func geocodingResult(localSearch: MKLocalSearchCompletion) {
+        let placeName = localSearch.title
+        let plceAddress = localSearch.subtitle
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(plceAddress) { placeMark, error in
+            if error == nil {
+                if let coordinates = placeMark?.first?.location?.coordinate {
+                    print("coordinates ", coordinates)
+                    DispatchQueue.main.async {
+                       let annotation = CustomAnnotation(coordinate: coordinates, title: placeName, subtitle: plceAddress)
+                        self.mapView.addAnnotation(annotation)
+                    }
+                }
+            }
+        }
+    }
+    
     func setVisibleArea() {
         guard let coordinate = self.dataSource.first?.coordinate else { return }
         print("Set Visible Area", coordinate)
@@ -112,20 +141,11 @@ extension IOSPlaceViewController: MKMapViewDelegate {
         print("didSelect annotation: ", annotation)
           
       }
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? CustomAnnotation else { return nil }
-        let view: MKMarkerAnnotationView
-        if let dequeueedView = mapView.dequeueReusableAnnotationView(withIdentifier: "CustomAnotation") as? MKMarkerAnnotationView {
-            dequeueedView.annotation = annotation
-            dequeueedView.canShowCallout = true
-            dequeueedView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-            view = dequeueedView
-        } else {
-            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "CustomAnotation")
-            view.canShowCallout = true
-            view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-        }
-        return view
+        guard !annotation.isKind(of: MKUserLocation.self) else { print("not MKUersLocation"); return nil }
+
+        return annotationHandler.getAnnotation(mapView: mapView, annotation: annotation)
     }
 }
 
@@ -146,49 +166,6 @@ extension IOSPlaceViewController: UISearchBarDelegate {
         self.searchCompleter.queryFragment = searchText
     }
 }
-extension IOSPlaceViewController: LocationHandlerDelegate {
-    func received(location: CLLocation) {
-        print(location)
-    }
-    
-    func locationDidFail(withError error: Error) {
-        print("In Main View controller ", error)
-    }
-}
-extension IOSPlaceViewController: ViewModelProtocol {
-    func didFinishedLoading() {
-        print("Did Finished Loading")
-    }
-    
-    func dataAnotation(anotations: [MKAnnotation]) {
-        if anotations.isEmpty {
-            self.resetDataSouce()
-        }
-        
-        if !dataSource.isEmpty {
-            anotations.forEach { (annotation) in
-                dataSource.append(annotation)
-            }
-        } else {
-            dataSource = anotations
-        }
-        
-        self.mapView.addAnnotations(anotations)
-
-    }
-    
-    func showActivity() {
-        print("shwo Activity")
-    }
-    
-    func hideActivity() {
-        print("hide Activity")
-    }
-    
-    func didFailWithError(error: CustomError) {
-        print("ViewModelProtocol: didFailWithError", error as Error)
-    }
-}
 
 extension IOSPlaceViewController: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
@@ -200,22 +177,29 @@ extension IOSPlaceViewController: MKLocalSearchCompleterDelegate {
     }
 }
 
+extension IOSPlaceViewController: LocationHandlerDelegate {
+    func received(location: CLLocation) {
+        print(location)
+    }
+    
+    func locationDidFail(withError error: Error) {
+        print("In Main View controller ", error)
+    }
+}
+extension IOSPlaceViewController: ViewModelProtocol {
+    func dataResult(places: [PlaceResult]) {
+        print("data Result\n", places)
+    }
+    
+    func didFailWithError(error: CustomError) {
+        print("ViewModelProtocol: didFailWithError", error as Error)
+    }
+}
+
 extension IOSPlaceViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let title = autocompleteResult[indexPath.row].title
-        let subtitle = autocompleteResult[indexPath.row].subtitle
-        let searchRequest = MKLocalSearch.Request(completion: autocompleteResult[indexPath.row])
-        let search = MKLocalSearch(request: searchRequest)
-        
-        search.start { (response, error) in
-            if error == nil {
-                if let coordinate = response?.mapItems[0].placemark.coordinate {
-                    self.dataAnotation(anotations: [ CustomAnnotation(coordinate: coordinate, title: title, subtitle: subtitle)])
-                    
-                }
-            }
-        }
+        geocodingResult(localSearch: autocompleteResult[indexPath.row])
         self.hideResult()
     }
     

@@ -117,23 +117,57 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eAL-Zy-u7i">
-                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eAL-Zy-u7i" userLabel="mapView">
+                                <rect key="frame" x="0.0" y="144" width="414" height="669"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lcS-hY-TEJ" userLabel="seachView">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="669"/>
+                                        <subviews>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="414" placeholderIntrinsicHeight="669" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1CU-Mx-dfX">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="669"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                            </tableView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="1CU-Mx-dfX" secondAttribute="bottom" id="Q5u-Xd-Eql"/>
+                                            <constraint firstItem="1CU-Mx-dfX" firstAttribute="top" secondItem="lcS-hY-TEJ" secondAttribute="top" id="a8A-lo-7cs"/>
+                                            <constraint firstAttribute="trailing" secondItem="1CU-Mx-dfX" secondAttribute="trailing" id="mrM-CA-ZGn"/>
+                                            <constraint firstItem="1CU-Mx-dfX" firstAttribute="leading" secondItem="lcS-hY-TEJ" secondAttribute="leading" id="w9Q-U8-tqI"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="lcS-hY-TEJ" firstAttribute="top" secondItem="eAL-Zy-u7i" secondAttribute="top" id="Beu-ad-fq4"/>
+                                    <constraint firstAttribute="bottom" secondItem="lcS-hY-TEJ" secondAttribute="bottom" id="MmK-SC-P7X"/>
+                                    <constraint firstItem="lcS-hY-TEJ" firstAttribute="leading" secondItem="eAL-Zy-u7i" secondAttribute="leading" id="h2x-FM-Uuu"/>
+                                    <constraint firstAttribute="trailing" secondItem="lcS-hY-TEJ" secondAttribute="trailing" id="neo-Df-LPi"/>
+                                </constraints>
                             </view>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="OBg-dV-mxj">
+                                <rect key="frame" x="0.0" y="88" width="414" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="fe1-MK-anG" firstAttribute="trailing" secondItem="eAL-Zy-u7i" secondAttribute="trailing" id="3fe-GD-ULE"/>
-                            <constraint firstItem="eAL-Zy-u7i" firstAttribute="top" secondItem="fe1-MK-anG" secondAttribute="top" id="PQt-em-7Dw"/>
+                            <constraint firstItem="OBg-dV-mxj" firstAttribute="trailing" secondItem="fe1-MK-anG" secondAttribute="trailing" id="KZz-4i-Cej"/>
+                            <constraint firstItem="OBg-dV-mxj" firstAttribute="top" secondItem="fe1-MK-anG" secondAttribute="top" id="S0h-Cs-SH0"/>
+                            <constraint firstItem="OBg-dV-mxj" firstAttribute="leading" secondItem="fe1-MK-anG" secondAttribute="leading" id="WYi-Cv-IOt"/>
                             <constraint firstItem="fe1-MK-anG" firstAttribute="bottom" secondItem="eAL-Zy-u7i" secondAttribute="bottom" id="f03-5R-8n8"/>
+                            <constraint firstItem="eAL-Zy-u7i" firstAttribute="top" secondItem="OBg-dV-mxj" secondAttribute="bottom" id="hso-9y-pfC"/>
                             <constraint firstItem="eAL-Zy-u7i" firstAttribute="leading" secondItem="fe1-MK-anG" secondAttribute="leading" id="ogJ-1n-o2i"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fe1-MK-anG"/>
                     </view>
                     <navigationItem key="navigationItem" id="b08-g7-hQg"/>
                     <connections>
-                        <outlet property="mapViewContainer" destination="eAL-Zy-u7i" id="T5K-MO-kI9"/>
+                        <outlet property="mapView" destination="eAL-Zy-u7i" id="TvY-4k-qWb"/>
+                        <outlet property="searchBar" destination="OBg-dV-mxj" id="pQW-Wm-mps"/>
+                        <outlet property="searchView" destination="lcS-hY-TEJ" id="9wA-oE-V0G"/>
+                        <outlet property="tableView" destination="1CU-Mx-dfX" id="737-Hs-Pgd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5KA-8H-7hA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

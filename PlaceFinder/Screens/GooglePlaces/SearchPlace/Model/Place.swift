@@ -6,14 +6,22 @@
 //  Copyright © 2020 Milton. All rights reserved.
 //
 import CoreLocation
-
-struct Destination {
-    var keyword: String?
-    var location: Coordinates?
-    var destinationCoordinate: Coordinates?
-    var radius: Int?
-    var zoom: Double?
-    var nextPageToken: String?
+import GoogleMaps
+class GMSPlaceMark: GMSMarker {
+    var name: String?
+    var address: String?
+    var iconUrl: String?
+    init(place: PlaceResult) {
+        self.name = place.name
+        self.address = place.address
+        self.iconUrl = place.iconUrl
+        super.init()
+        if let coordinate = place.geometry?.location?.cordinates {
+            position = coordinate
+            groundAnchor = CGPoint(x: 0.5, y: 2.0)
+            appearAnimation = .pop
+        }
+    }
 }
 
 struct Place: Decodable {
@@ -25,7 +33,7 @@ struct PlaceResult: Decodable {
     var businessStatus: String?
     var address: String?
     var geometry: Geometry?
-    var icon: String?
+    var iconUrl: String?
     var name: String?
     var openingHours: OpeningHours?
     var placeId: String?
@@ -38,7 +46,7 @@ struct PlaceResult: Decodable {
         case businessStatus = "business_status"
         case address = "formatted_address"
         case geometry
-        case icon
+        case iconUrl = "icon"
         case name
         case openingHours = "opening_hours"
         case placeId = "place_id"

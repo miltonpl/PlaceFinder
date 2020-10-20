@@ -7,86 +7,146 @@
 //
 import GooglePlaces
 import GoogleMaps
-import MapKit
+//import MapKit
 import UIKit
-
+import MapKit
 class GooglePlaceViewController: UIViewController {
-    var resultViewController: GMSAutocompleteResultsViewController!
-    var searchController: UISearchController!
-    //    var resultTextView: UITextView!
     
-    @IBOutlet weak var mapViewContainer: UIView!
-    //    private var viewModel: SearchLoactionViewModelProtocol = PlaceViewModel()
-    private var googleMapsView: GMSMapView!
-    //    private var placesClient: GMSPlacesClient!
-    private var resultArray = [String]()
-    //    weak var delegate: GooglePlaceViewControllerDelegate?
+    @IBOutlet weak var searchView: UIView!
+    @IBOutlet weak var mapView: UIView!
+    @IBOutlet weak var tableView: UITableView! {
+        didSet {
+            self.tableView.delegate = self
+            self.tableView.dataSource = self
+            self.tableView.register(SearchTableViewCell.nib(), forCellReuseIdentifier: SearchTableViewCell.identifier)
+        }
+    }
+    @IBOutlet weak var searchBar: UISearchBar! {
+        didSet {
+            self.searchBar.delegate = self
+            self.searchBar.placeholder = "Search Place"
+            self.searchBar.showsCancelButton = true
+            self.searchBar.sizeToFit()
+        }
+    }
+    
+    private var googleMapView: GMSMapView! {
+        didSet {
+            self.googleMapView.delegate = self
+            self.googleMapView.isMyLocationEnabled = true
+        }
+    }
+    lazy var locationHandler = LocationHandler(delegate: self)
+      var viewModel: PlaceViewModelProtocol = ViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Goople Maps"
-        GMSServices.provideAPIKey(GooglePlaces.googleKey)
-        GMSPlacesClient.provideAPIKey(GooglePlaces.googleKey)
-        
-        self.resultViewController = GMSAutocompleteResultsViewController()
-        self.resultViewController.delegate = self
-        
-        self.searchController = UISearchController(searchResultsController: resultViewController)
-        self.searchController.searchResultsUpdater = resultViewController
-        
-        self.mapViewContainer.addSubview(searchController.searchBar)
-        
-        self.view.addSubview(mapViewContainer)
-        
-        self.searchController.searchBar.sizeToFit()
-        self.searchController.hidesNavigationBarDuringPresentation = false
-        self.definesPresentationContext = true
-        
-        title = "Google Places"
-        
-        // Do any additional setup after loading the view.
-        // Create a GMSCameraPosition that tells the map to display the
-        // coordinate -33.86,151.20 at zoom level 6.
+        self.locationHandler.getUserLocation()
+        self.viewModel.delegate = self
+//        self.searchView.isHidden = true
+//        showResults(coordinate: Coordinates(lat: 77.0, lng: 245.0))
         
     }
-    func showResults(place: GMSPlace) {
-        // Do something with the selected place.
-        print("Place name: \(String(describing: place.name))")
-        print("Place address: \(String(describing: place.formattedAddress))")
-        print("Place attributions: \(String(describing: place.attributions))")
-        print("Place attributions: \(String(describing: place.coordinate))")
-        let camera = GMSCameraPosition.camera(withLatitude: place.coordinate.latitude, longitude: place.coordinate.longitude, zoom: 6.0)
-        self.googleMapsView = GMSMapView.map(withFrame: mapViewContainer.frame, camera: camera)
-        self.view.addSubview(self.googleMapsView)
-        // Creates a marker in the center of the map.
-        let marker = GMSMarker()
-        marker.position = CLLocationCoordinate2D(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)
+    
+    func showResults(place: PlaceResult) {
+        if let coordinate = place.geometry?.location {
+            print("coordinate place: ", coordinate)
+            let camera = GMSCameraPosition.camera(withLatitude: coordinate.lat, longitude: coordinate.lng, zoom: 6.0)
+            self.googleMapView = GMSMapView.map(withFrame: mapView.frame, camera: camera)
+            //        self.mapView.addSubview(self.googleMapView)
+            self.view.addSubview(self.googleMapView)
+        }
         
-        marker.title = place.name
-        marker.snippet = place.formattedAddress
-        marker.map = googleMapsView
+        let marker = GMSPlaceMark(place: place)
+        marker.map = googleMapView
     }
     
     func hideResults() {
+        self.searchView.isHidden = true
+        self.tableView.reloadData()
+        
+    }
+    func resetDataSource() {
         
     }
 }
-extension GooglePlaceViewController: GMSAutocompleteResultsViewControllerDelegate {
-    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
-        searchController.isActive = false
-        self.showResults(place: place)
+
+extension GooglePlaceViewController: GMSMapViewDelegate {
+    
+    func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
+        print("In markerInfoWindow marker: GMSMarker")
+        guard let marker = marker as? GMSPlaceMark else { return nil }
+        guard  let viewMaker = UIView.viewNib("MarkerView") as? MarkerView  else {
+            return nil }
+        viewMaker.confiure(marker: marker)
+        return viewMaker
+    }
+}
+
+extension GooglePlaceViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.isHidden = false
+        resetDataSource()
+        print("SearchBarTextDidBeginEding")
     }
     
-    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didFailAutocompleteWithError error: Error) {
-        print("Error: ", error.localizedDescription)
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = nil
+        self.resetDataSource()
+        self.hideResults()
+        self.view.endEditing(true)
     }
-    // Turn the network activity indicator on and off again.
-    func didRequestAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else { resetDataSource(); return }
+        if searchText.count > 3 {
+            self.viewModel.handlePlaceSearch(text: searchText)
+        }
+    }
+}
+
+extension GooglePlaceViewController: LocationHandlerDelegate {
+    func received(location: CLLocation) {
+        print(location)
+    }
+    
+    func locationDidFail(withError error: Error) {
+        print("Error: ", error)
+    }
+}
+
+extension GooglePlaceViewController: ViewModelProtocol {
+  
+    func dataResult(places: [PlaceResult]) {
+        if let firstLoacation = places.first {
+            showResults(place: firstLoacation)
+        }
+    }
+   
+    func didFailWithError(error: CustomError) {
+        print("ViewModelProtocol: didFailWithError", error as Error)
+    }
+}
+extension GooglePlaceViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
     }
     
-    func didUpdateAutocompletePredictions(forResultsController resultsController: GMSAutocompleteResultsViewController) {
-        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as?
+            SearchTableViewCell else { fatalError("Unable to dequeueReusableCell: SearchTableViewCell ")}
+        //        let place = PlaceDetails(title: self.autocompleteResult[indexPath.row].title, subtitle: self.autocompleteResult[indexPath.row].subtitle)
+        //        cell.configure(place: place)
+        return cell
     }
 }
