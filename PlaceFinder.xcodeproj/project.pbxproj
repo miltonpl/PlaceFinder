@@ -34,6 +34,7 @@
 		52F7E48E253E0E99003387EE /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E48D253E0E99003387EE /* UIImageView+Ext.swift */; };
 		52F7E491253F3DE5003387EE /* CategoriesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E490253F3DE5003387EE /* CategoriesDataSource.swift */; };
 		52F7E493253F40B3003387EE /* CustomAnnotationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E492253F40B3003387EE /* CustomAnnotationHandler.swift */; };
+		52F7E497253F7861003387EE /* TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E496253F7861003387EE /* TableViewDataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		52F7E48D253E0E99003387EE /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
 		52F7E490253F3DE5003387EE /* CategoriesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesDataSource.swift; sourceTree = "<group>"; };
 		52F7E492253F40B3003387EE /* CustomAnnotationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationHandler.swift; sourceTree = "<group>"; };
+		52F7E496253F7861003387EE /* TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDataSource.swift; sourceTree = "<group>"; };
 		75A262A044047A88B699F08C /* Pods_PlaceFinder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlaceFinder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -198,6 +200,7 @@
 		52F7E463253C9BD3003387EE /* iOSPlaces */ = {
 			isa = PBXGroup;
 			children = (
+				52F7E495253F7749003387EE /* ModelView */,
 				52F7E47D253D7793003387EE /* Categories */,
 				52F7E467253C9C56003387EE /* View */,
 				52F7E453253C963D003387EE /* Model */,
@@ -316,6 +319,14 @@
 				52F7E490253F3DE5003387EE /* CategoriesDataSource.swift */,
 			);
 			path = Categories;
+			sourceTree = "<group>";
+		};
+		52F7E495253F7749003387EE /* ModelView */ = {
+			isa = PBXGroup;
+			children = (
+				52F7E496253F7861003387EE /* TableViewDataSource.swift */,
+			);
+			path = ModelView;
 			sourceTree = "<group>";
 		};
 		B286D2C3B2119349027C78E6 /* Pods */ = {
@@ -482,6 +493,7 @@
 				52F7E46B253C9C83003387EE /* Place.swift in Sources */,
 				52F7E45F253C9AF5003387EE /* LocationHandler.swift in Sources */,
 				52F7E475253CA4FA003387EE /* iOSPlaceViewController.swift in Sources */,
+				52F7E497253F7861003387EE /* TableViewDataSource.swift in Sources */,
 				52F7E484253D78EF003387EE /* PlaceDetails.swift in Sources */,
 				52F7E46D253C9CC0003387EE /* GooglePlaceViewController.swift in Sources */,
 				52F7E459253C96FB003387EE /* Constants.swift in Sources */,

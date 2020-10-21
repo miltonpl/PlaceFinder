@@ -132,3 +132,34 @@ class AquariumAnnotationView: MKAnnotationView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+class PizzaAnnotation: NSObject, MKAnnotation {
+    
+    var coordinate: CLLocationCoordinate2D
+    var title: String?
+    var subtitle: String?
+    var isOpen: String?
+    
+    init(coordinate: CLLocationCoordinate2D, title: String, subtitle: String, isOpen: String) {
+        self.coordinate =  coordinate
+        self.title = title
+        self.subtitle = subtitle
+        self.isOpen = isOpen
+        super.init()
+    }
+    
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+        super.init()
+    }
+}
+class PizzaAnnotationView: MKAnnotationView {
+    
+    override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
+        
+        super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
