@@ -94,7 +94,11 @@ class TableViewDataSource: NSObject, UITableViewDelegate, UITableViewDataSource 
     private func search(using searchRequest: MKLocalSearch.Request) {
         // Confine the map search area to an area around the user's current location.
         searchRequest.region = boundingRegion
-        searchRequest.resultTypes = .pointOfInterest
+        if #available(iOS 13.0, *) {
+            searchRequest.resultTypes = .pointOfInterest
+        } else {
+            // Fallback on earlier versions
+        }
         
         localSearch = MKLocalSearch(request: searchRequest)
         

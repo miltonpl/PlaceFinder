@@ -10,23 +10,51 @@ import GoogleMaps
 class GMSPlaceMark: GMSMarker {
     var name: String?
     var address: String?
-    var iconUrl: String?
-    init(place: PlaceResult) {
-        self.name = place.name
-        self.address = place.address
-        self.iconUrl = place.iconUrl
+    var phone: String?
+    var website: String?
+    init(name: String, placeDetails: ResultDetails?, coordinate: Coordinates) {
         super.init()
-        if let coordinate = place.geometry?.location?.cordinates {
-            position = coordinate
-            groundAnchor = CGPoint(x: 0.5, y: 2.0)
-            appearAnimation = .pop
+        self.name = name
+        self.address = placeDetails?.address
+        self.phone = placeDetails?.phone
+        if let website = placeDetails?.website {
+            var web = ""
+            for letter in website {
+                if letter == "?" {
+                    break
+                }
+                web.append(letter)
+            }
+            if !web.isEmpty {
+                self.website = web
+            }
         }
+        position = coordinate.cordinates
+
+        groundAnchor = CGPoint(x: 0.5, y: 2.0)
+        appearAnimation = .pop
+    }
+}
+
+struct PlaceInfo: Decodable {
+    var result: ResultDetails?
+}
+
+struct ResultDetails: Decodable {
+    var address: String?
+    var phone: String?
+    var website: String?
+    enum CodingKeys: String, CodingKey {
+        case address = "formatted_address"
+        case phone = "formatted_phone_number"
+        case website = "website"
     }
 }
 
 struct Place: Decodable {
     var results: [PlaceResult]?
     var status: String?
+   
 }
 
 struct PlaceResult: Decodable {

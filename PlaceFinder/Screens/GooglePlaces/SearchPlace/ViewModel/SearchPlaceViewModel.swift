@@ -11,11 +11,12 @@ import MapKit
 protocol ViewModelProtocol: AnyObject {
     func didFailWithError(error: CustomError)
     func dataResult(places: [PlaceResult])
-    
+    func placeInfoResult(place: ResultDetails, placeId: String)
 }
 
 protocol PlaceViewModelProtocol: AnyObject {
     func handlePlaceSearch(text: String)
+    func fetchPlaceInfoDetails(placeId: String)
     var delegate: ViewModelProtocol? { get set }
 }
 
@@ -53,6 +54,31 @@ class ViewModel: PlaceViewModelProtocol {
             case .success(let place):
                 if let results = place.results {
                     self.delegate?.dataResult(places: results)
+                }
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    func fetchPlaceInfoDetails(placeId: String) {
+        guard var urlComponents = URLComponents(string: GooglePlaces.BaseURLDetail) else { return }
+        var parameter = GooglePlaces.detailParameters
+        parameter["place_id"] = placeId
+        var elements: [URLQueryItem] = []
+        for (key, value) in parameter {
+            elements.append(URLQueryItem(name: key, value: value))
+        }
+        urlComponents.queryItems = elements
+        guard let url = urlComponents.url else { return }
+        
+        var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
+        request.httpMethod = "GET"
+        ServiceManager.manager.request(PlaceInfo.self, withRequest: request) { result in
+            switch result {
+            case .success(let place):
+                if let placeDeatils = place.result {
+                    self.delegate?.placeInfoResult(place: placeDeatils, placeId: placeId)
                 }
                 
             case .failure(let error):

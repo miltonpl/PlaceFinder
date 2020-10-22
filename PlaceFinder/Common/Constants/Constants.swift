@@ -16,8 +16,15 @@ enum Constants {
 enum GooglePlaces {
     static let googleKey = "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
     static let BaseURL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+    
     static let parameters = [
         "query": "",
+        "key": "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
+    ]
+    static let BaseURLDetail = "https://maps.googleapis.com/maps/api/place/details/json"
+    static let detailParameters = [
+        "place_id": "",
+        "fields": "formatted_phone_number,website,formatted_address",
         "key": "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
     ]
 }

@@ -37,7 +37,8 @@ class GooglePlaceViewController: UIViewController {
         }
     }
     lazy var locationHandler = LocationHandler(delegate: self)
-      var viewModel: PlaceViewModelProtocol = ViewModel()
+    var viewModel: PlaceViewModelProtocol = ViewModel()
+    var placeIdDict: [String: PlaceResult] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,28 +46,12 @@ class GooglePlaceViewController: UIViewController {
         self.locationHandler.getUserLocation()
         self.viewModel.delegate = self
 //        self.searchView.isHidden = true
-//        showResults(coordinate: Coordinates(lat: 77.0, lng: 245.0))
-        
     }
-    
-    func showResults(place: PlaceResult) {
-        if let coordinate = place.geometry?.location {
-            print("coordinate place: ", coordinate)
-            let camera = GMSCameraPosition.camera(withLatitude: coordinate.lat, longitude: coordinate.lng, zoom: 6.0)
-            self.googleMapView = GMSMapView.map(withFrame: mapView.frame, camera: camera)
-            //        self.mapView.addSubview(self.googleMapView)
-            self.view.addSubview(self.googleMapView)
-        }
-        
-        let marker = GMSPlaceMark(place: place)
-        marker.map = googleMapView
-    }
-    
     func hideResults() {
         self.searchView.isHidden = true
         self.tableView.reloadData()
-        
     }
+    
     func resetDataSource() {
         
     }
@@ -76,6 +61,7 @@ extension GooglePlaceViewController: GMSMapViewDelegate {
     
     func mapView(_ mapView: GMSMapView, markerInfoWindow marker: GMSMarker) -> UIView? {
         print("In markerInfoWindow marker: GMSMarker")
+        
         guard let marker = marker as? GMSPlaceMark else { return nil }
         guard  let viewMaker = UIView.viewNib("MarkerView") as? MarkerView  else {
             return nil }
@@ -121,10 +107,30 @@ extension GooglePlaceViewController: LocationHandlerDelegate {
 }
 
 extension GooglePlaceViewController: ViewModelProtocol {
-  
+    
+    func placeInfoResult(place: ResultDetails, placeId: String) {
+        if let currentPlace = placeIdDict[placeId], let coordinate = currentPlace.geometry?.location, let name = currentPlace.name {
+            let marker = GMSPlaceMark(name: name, placeDetails: place, coordinate: coordinate)
+            marker.map = googleMapView
+            print(placeId)
+            print(place)
+        }
+    }
+    
     func dataResult(places: [PlaceResult]) {
-        if let firstLoacation = places.first {
-            showResults(place: firstLoacation)
+
+        if let coordinate = places.first?.geometry?.location {
+            print("coordinate place: ", coordinate)
+            let camera = GMSCameraPosition.camera(withLatitude: coordinate.lat, longitude: coordinate.lng, zoom: 6.0)
+            self.googleMapView = GMSMapView.map(withFrame: mapView.frame, camera: camera)
+            self.view.addSubview(self.googleMapView)
+        }
+        
+        for place in places {
+            if let placeId = place.placeId {
+                viewModel.fetchPlaceInfoDetails(placeId: placeId)
+                placeIdDict[placeId] = place
+            }
         }
     }
    

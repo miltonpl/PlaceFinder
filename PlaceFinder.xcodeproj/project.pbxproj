@@ -35,6 +35,8 @@
 		52F7E491253F3DE5003387EE /* CategoriesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E490253F3DE5003387EE /* CategoriesDataSource.swift */; };
 		52F7E493253F40B3003387EE /* CustomAnnotationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E492253F40B3003387EE /* CustomAnnotationHandler.swift */; };
 		52F7E497253F7861003387EE /* TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E496253F7861003387EE /* TableViewDataSource.swift */; };
+		52F7E49D25411D51003387EE /* AnnotationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F7E49B25411D51003387EE /* AnnotationTableViewCell.swift */; };
+		52F7E49E25411D51003387EE /* AnnotationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 52F7E49C25411D51003387EE /* AnnotationTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +71,8 @@
 		52F7E490253F3DE5003387EE /* CategoriesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesDataSource.swift; sourceTree = "<group>"; };
 		52F7E492253F40B3003387EE /* CustomAnnotationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationHandler.swift; sourceTree = "<group>"; };
 		52F7E496253F7861003387EE /* TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDataSource.swift; sourceTree = "<group>"; };
+		52F7E49B25411D51003387EE /* AnnotationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationTableViewCell.swift; sourceTree = "<group>"; };
+		52F7E49C25411D51003387EE /* AnnotationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnnotationTableViewCell.xib; sourceTree = "<group>"; };
 		75A262A044047A88B699F08C /* Pods_PlaceFinder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlaceFinder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -212,6 +216,7 @@
 		52F7E464253C9BE6003387EE /* GooglePlaces */ = {
 			isa = PBXGroup;
 			children = (
+				52F7E49A25411CFE003387EE /* CustomAnnotationView */,
 				52F7E465253C9C39003387EE /* SearchPlace */,
 			);
 			path = GooglePlaces;
@@ -220,7 +225,6 @@
 		52F7E465253C9C39003387EE /* SearchPlace */ = {
 			isa = PBXGroup;
 			children = (
-				52F7E488253E0BD5003387EE /* View */,
 				52F7E469253C9C71003387EE /* Model */,
 				52F7E468253C9C64003387EE /* ViewModel */,
 				52F7E466253C9C4B003387EE /* Controller */,
@@ -307,8 +311,8 @@
 		52F7E488253E0BD5003387EE /* View */ = {
 			isa = PBXGroup;
 			children = (
-				52F7E489253E0C99003387EE /* MarkerView.xib */,
-				52F7E48B253E0CE8003387EE /* MarkerView.swift */,
+				52F7E49C25411D51003387EE /* AnnotationTableViewCell.xib */,
+				52F7E49B25411D51003387EE /* AnnotationTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -327,6 +331,24 @@
 				52F7E496253F7861003387EE /* TableViewDataSource.swift */,
 			);
 			path = ModelView;
+			sourceTree = "<group>";
+		};
+		52F7E49A25411CFE003387EE /* CustomAnnotationView */ = {
+			isa = PBXGroup;
+			children = (
+				52F7E49F254120EC003387EE /* Controller */,
+				52F7E488253E0BD5003387EE /* View */,
+			);
+			path = CustomAnnotationView;
+			sourceTree = "<group>";
+		};
+		52F7E49F254120EC003387EE /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				52F7E48B253E0CE8003387EE /* MarkerView.swift */,
+				52F7E489253E0C99003387EE /* MarkerView.xib */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		B286D2C3B2119349027C78E6 /* Pods */ = {
@@ -411,6 +433,7 @@
 				52F7E47C253D5447003387EE /* SearchTableViewCell.xib in Resources */,
 				52F7E48A253E0C99003387EE /* MarkerView.xib in Resources */,
 				52F7E447253C9585003387EE /* Assets.xcassets in Resources */,
+				52F7E49E25411D51003387EE /* AnnotationTableViewCell.xib in Resources */,
 				52F7E445253C9580003387EE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +518,7 @@
 				52F7E475253CA4FA003387EE /* iOSPlaceViewController.swift in Sources */,
 				52F7E497253F7861003387EE /* TableViewDataSource.swift in Sources */,
 				52F7E484253D78EF003387EE /* PlaceDetails.swift in Sources */,
+				52F7E49D25411D51003387EE /* AnnotationTableViewCell.swift in Sources */,
 				52F7E46D253C9CC0003387EE /* GooglePlaceViewController.swift in Sources */,
 				52F7E459253C96FB003387EE /* Constants.swift in Sources */,
 				52F7E491253F3DE5003387EE /* CategoriesDataSource.swift in Sources */,
@@ -578,7 +602,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -632,7 +656,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -650,6 +674,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XWYBXAANR7;
 				INFOPLIST_FILE = "PlaceFinder/Support Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -669,6 +694,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XWYBXAANR7;
 				INFOPLIST_FILE = "PlaceFinder/Support Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

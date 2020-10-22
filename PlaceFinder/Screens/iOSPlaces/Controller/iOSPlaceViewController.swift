@@ -5,10 +5,9 @@
 //  Created by Milton Palaguachi on 10/18/20.
 //  Copyright © 2020 Milton. All rights reserved.
 //
-
-import UIKit
-//import CoreLocation
 import MapKit
+import UIKit
+
 class IOSPlaceViewController: UIViewController, TableViewDataSourceDelegate {
     
     @IBOutlet weak var searchView: UIView!
@@ -67,13 +66,13 @@ class IOSPlaceViewController: UIViewController, TableViewDataSourceDelegate {
          self.mapView.register(AquariumAnnotationView.self, forAnnotationViewWithReuseIdentifier: "AquariumAnnotationView")
          self.mapView.register(PizzaAnnotationView.self, forAnnotationViewWithReuseIdentifier: "PizzaAnnotationView")
     }
-    
     func setCamara() {
-        guard let coordinate = self.dataSource.first?.coordinate else { return }
-        let radius = 1000.0
-        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: radius, longitudinalMeters: radius)
-        let camareBoundry = MKMapView.CameraBoundary(coordinateRegion: region)
-        self.mapView.setCameraBoundary(camareBoundry, animated: true)
+//        guard let coordinate = self.dataSource.first?.coordinate else { return }
+//        let radius = 1000.0
+//        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: radius, longitudinalMeters: radius)
+//        let camareBoundry = MKMapView.CameraBoundary(coordinateRegion: region)
+        // Fallback on earlier versions
+//        self.mapView.setCameraBoundary(camareBoundry, animated: true)
     }
    
     func addAnnotation() {
@@ -179,6 +178,9 @@ extension IOSPlaceViewController: LocationHandlerDelegate {
     }
 }
 extension IOSPlaceViewController: ViewModelProtocol {
+    func placeInfoResult(place: ResultDetails, placeId: String) {
+    }
+
     func dataResult(places: [PlaceResult]) {
         print("data Result\n", places)
     }

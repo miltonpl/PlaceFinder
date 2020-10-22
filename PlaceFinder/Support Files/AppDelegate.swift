@@ -16,15 +16,15 @@
  8.) Implementation of Google Maps and displaying a series of custom annotation on the Map- done
  */
 import GoogleMaps
-import GooglePlaces
+//import GooglePlaces
 import UIKit
-
+@available(iOS 13.0, *)
 @UIApplicationMain
  class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         GMSServices.provideAPIKey(GooglePlaces.googleKey)
-        GMSPlacesClient.provideAPIKey(GooglePlaces.googleKey)
+//        GMSPlacesClient.provideAPIKey(GooglePlaces.googleKey)
         // Override point for customization after application launch.
         return true
     }
