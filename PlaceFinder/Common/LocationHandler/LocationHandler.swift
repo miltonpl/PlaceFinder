@@ -8,12 +8,10 @@
 
 import CoreLocation
 import UIKit
-// swiftlint:disable class_delegate_protocol superfluous_disable_command
-// swiftlint:disable identifier_name
-protocol LocationHandlerDelegate: AlertHandlerProtocol {
+
+protocol LocationHandlerProtocol: AlertHandlerProtocol {
     func received(location: CLLocation)
     func locationDidFail(withError error: Error)
-    
 }
 
 class LocationHandler: NSObject {
@@ -28,9 +26,9 @@ class LocationHandler: NSObject {
         return locationM
     }()
     
-    weak var delegate: LocationHandlerDelegate?
+    weak var delegate: LocationHandlerProtocol?
     // MARK: - Init(delegate: LocationHandlerDelegate)
-    init(delegate: LocationHandlerDelegate) {
+    init(delegate: LocationHandlerProtocol) {
         self.delegate = delegate
         super.init()
     }

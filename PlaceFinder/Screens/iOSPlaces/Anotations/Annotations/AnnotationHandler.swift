@@ -51,63 +51,58 @@ struct AnnotationHandler {
     }
     
     func setupCustomAnnotationView(for annotation: CustomAnnotation, on mapView: MKMapView) -> MKAnnotationView? {
+        let customAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "CustomAnnotationView")
+        customAnnotationView?.annotation = annotation
+        customAnnotationView?.canShowCallout = false
+        customAnnotationView?.image = UIImage(named: "marker")!
+        return customAnnotationView
+    }
 
-        let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "CustomAnnotationView", for: annotation)
+    func setupAquarimAnnotationView(for annotation: AquariumAnnotation, on mapView: MKMapView) -> MKAnnotationView? {
+        
+        let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "AquariumAnnotationView", for: annotation)
         
         flagAnnotationView.canShowCallout = true
         let image = UIImage(named: "place_marker")!
+        let image2 = UIImage(named: "google_maps")!
+        
         flagAnnotationView.annotation = annotation
         flagAnnotationView.image = image
+        flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
         let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
         flagAnnotationView.centerOffset = offset
         return flagAnnotationView
         
     }
-    func setupAquarimAnnotationView(for annotation: AquariumAnnotation, on mapView: MKMapView) -> MKAnnotationView? {
-
-          let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "AquariumAnnotationView", for: annotation)
-          
-          flagAnnotationView.canShowCallout = true
-          let image = UIImage(named: "place_marker")!
-          let image2 = UIImage(named: "google_maps")!
-          
-          flagAnnotationView.annotation = annotation
-          flagAnnotationView.image = image
-          flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
-          let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
-          flagAnnotationView.centerOffset = offset
-          return flagAnnotationView
-
-      }
     
     func setupATMAnnotationView(for annotation: ATMAnnotation, on mapView: MKMapView) -> MKAnnotationView? {
-
-          let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "ATMAnnotationView", for: annotation)
-          
-          flagAnnotationView.canShowCallout = true
-          let image = UIImage(named: "place_marker")!
-          let image2 = UIImage(named: "google_maps")!
-          
-          flagAnnotationView.annotation = annotation
-          flagAnnotationView.image = image
-          flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
-          let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
-          flagAnnotationView.centerOffset = offset
-          return flagAnnotationView
-      }
+        
+        let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "ATMAnnotationView", for: annotation)
+        
+        flagAnnotationView.canShowCallout = true
+        let image = UIImage(named: "place_marker")!
+        let image2 = UIImage(named: "google_maps")!
+        
+        flagAnnotationView.annotation = annotation
+        flagAnnotationView.image = image
+        flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
+        let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
+        flagAnnotationView.centerOffset = offset
+        return flagAnnotationView
+    }
     func setupPizzaAnnotationView(for annotation: PizzaAnnotation, on mapView: MKMapView) -> MKAnnotationView? {
-
-            let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "ATMAnnotationView", for: annotation)
-            
-            flagAnnotationView.canShowCallout = true
-            let image = UIImage(named: "pizza_marker")!
-            let image2 = UIImage(named: "pizza")!
-            
-            flagAnnotationView.annotation = annotation
-            flagAnnotationView.image = image
-            flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
-            let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
-            flagAnnotationView.centerOffset = offset
-            return flagAnnotationView
-        }
+        
+        let flagAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "ATMAnnotationView", for: annotation)
+        
+        flagAnnotationView.canShowCallout = true
+        let image = UIImage(named: "pizza_marker")!
+        let image2 = UIImage(named: "pizza")!
+        
+        flagAnnotationView.annotation = annotation
+        flagAnnotationView.image = image
+        flagAnnotationView.leftCalloutAccessoryView = UIImageView(image: image2)
+        let offset = CGPoint(x: image.size.width/2, y: -(image.size.height)/2)
+        flagAnnotationView.centerOffset = offset
+        return flagAnnotationView
+    }
 }

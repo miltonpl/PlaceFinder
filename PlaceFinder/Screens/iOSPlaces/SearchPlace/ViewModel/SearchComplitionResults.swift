@@ -8,17 +8,22 @@
 import MapKit
 import UIKit
 
-protocol TableViewDataSourceDelegate: AnyObject {
+protocol SearchComplitionResultDelegate: AnyObject {
     func addAnnotation()
-    func hideResult()
+    func hideSearchComplitionResult()
+    func setSearchTest(text: String)
 }
 
-class TableViewDataSource: NSObject, UITableViewDelegate, UITableViewDataSource {
+class SearchComplitionResult: NSObject, UITableViewDelegate, UITableViewDataSource {
     
-    weak var delegate: TableViewDataSourceDelegate?
-    public var autocompleteResult = [MKLocalSearchCompletion]()
+    weak var delegate: SearchComplitionResultDelegate?
+    public var autocompleteResult = [MKLocalSearchCompletion]() {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
     public var boundingRegion: MKCoordinateRegion = MKCoordinateRegion(MKMapRect.world)
-    
+    public var localSearchState = false
     private var placeSearchType: String?
     private let tableView: UITableView
     private var places: [MKMapItem]?
@@ -36,6 +41,8 @@ class TableViewDataSource: NSObject, UITableViewDelegate, UITableViewDataSource 
         self.setUp()
     }
     
+    lazy var localSearchResult = LocalSearch()
+    lazy var geocoder = Geocoder()
     private func setUp() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -53,73 +60,58 @@ class TableViewDataSource: NSObject, UITableViewDelegate, UITableViewDataSource 
             case "Gas Stations":
                 guard let name = mapItem.name, let phone = mapItem.phoneNumber else { continue }
                 annotations.append(GasStationAnnotation(coordinate: mapItem.placemark.coordinate, title: name, subtitle: phone, rating: 4.0))
-                
             default:
-                guard let name = mapItem.name, let phone = mapItem.phoneNumber else { continue }
-                annotations.append(CustomAnnotation(coordinate: mapItem.placemark.coordinate, title: name, subtitle: phone ))
+                annotations.append(CustomAnnotation(coordinate: mapItem.placemark.coordinate, mapItem: mapItem))
             }
         }
-        
         self.annotations = annotations
-    }
-    
-    private func geocodingResult(localSearch: MKLocalSearchCompletion) {
-        let placeName = localSearch.title
-        let plceAddress = localSearch.subtitle
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(plceAddress) { placeMark, error in
-            guard error == nil else { return }
-            if let coordinates = placeMark?.first?.location?.coordinate {
-                DispatchQueue.main.async {
-                    let annotation = CustomAnnotation(coordinate: coordinates, title: placeName, subtitle: plceAddress)
-                    print(annotation)
-                    self.delegate?.addAnnotation()
-                }
-            }
-        }
     }
     
     private func search(for suggestedCompletion: MKLocalSearchCompletion) {
         let searchRequest = MKLocalSearch.Request(completion: suggestedCompletion)
         self.placeSearchType = searchRequest.naturalLanguageQuery
-        search(using: searchRequest)
+        localSearchResult.boundingRegion = self.boundingRegion
+        localSearchResult.search(using: searchRequest) { mapItem in
+            self.places = mapItem
+            self.boundingRegion = self.localSearchResult.boundingRegion
+            self.setPlacesNearBy()
+            self.delegate?.addAnnotation()
+        }
     }
     
     private func search(for queryString: String?) {
         let searchRequest = MKLocalSearch.Request()
         searchRequest.naturalLanguageQuery = queryString
-        search(using: searchRequest)
-    }
-    
-    private func search(using searchRequest: MKLocalSearch.Request) {
-        // Confine the map search area to an area around the user's current location.
-        searchRequest.region = boundingRegion
-        if #available(iOS 13.0, *) {
-            searchRequest.resultTypes = .pointOfInterest
-        } else {
-            // Fallback on earlier versions
+        localSearchResult.boundingRegion = self.boundingRegion
+        localSearchResult.search(using: searchRequest) { mapItem in
+            self.places = mapItem
+            self.boundingRegion = self.localSearchResult.boundingRegion
+            self.setPlacesNearBy()
+            self.delegate?.addAnnotation()
         }
-        
-        localSearch = MKLocalSearch(request: searchRequest)
-        
-        localSearch?.start { [unowned self] (response, error) in
-            guard error == nil else {
-                print("localSearch:", error ?? "Not ERROR")
-                return
+    }
+    private func geocoderSearch(text: String) {
+        self.placeSearchType = "Unkown"
+        geocoder.geocodeAddressStringResult(for: text) { mapItem in
+            self.places = mapItem
+            if self.places?.isEmpty ?? true {
+                self.delegate?.setSearchTest(text: "Sorry No Resuts, Try local search")
+                
             }
-            self.places = response?.mapItems
-            
-            if let boundingRegion = response?.boundingRegion {
-                self.boundingRegion = boundingRegion
-                self.setPlacesNearBy()
-                self.delegate?.addAnnotation()
-            }
+            self.setPlacesNearBy()
+            self.delegate?.addAnnotation()
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        search(for: autocompleteResult[indexPath.row])
-        delegate?.hideResult()
+        if localSearchState {
+            search(for: autocompleteResult[indexPath.row])
+        } else {
+            let result = autocompleteResult[indexPath.row]
+            geocoderSearch(text: result.title + result.subtitle)
+        }
+        delegate?.setSearchTest(text: autocompleteResult[indexPath.row].title)
+        delegate?.hideSearchComplitionResult()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -61,6 +61,7 @@ class ViewModel: PlaceViewModelProtocol {
             }
         }
     }
+    
     func fetchPlaceInfoDetails(placeId: String) {
         guard var urlComponents = URLComponents(string: GooglePlaces.BaseURLDetail) else { return }
         var parameter = GooglePlaces.detailParameters

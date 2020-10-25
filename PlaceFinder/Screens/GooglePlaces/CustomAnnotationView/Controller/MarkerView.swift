@@ -13,11 +13,8 @@ enum NameType: String {
     case name
     case address
 }
-/*
- override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
- }
- */
-class MarkerView: UIView, UITableViewDelegate, UITableViewDataSource {
+
+class MarkerView: UIView {
     @IBOutlet private weak var placeName: UILabel!
     @IBOutlet private weak var tableView: UITableView! {
         didSet {
@@ -29,6 +26,36 @@ class MarkerView: UIView, UITableViewDelegate, UITableViewDataSource {
         }
     }
     var arrayData: [(name: NameType, description: String)] =  []
+    /*
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        if hitView != nil {
+            self.superview?.bringSubviewToFront(self)
+        }
+        return hitView
+    }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let rect = self.bounds
+        var isInside: Bool = rect.contains(point)
+        if !isInside {
+            for view in self.subviews {
+                isInside = view.frame.contains(point)
+                if isInside {
+                    break
+                }
+            }
+        }
+        return isInside
+    }
+    */
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     func confiure(marker: GMSPlaceMark) {
         placeName.text = "None"
@@ -49,18 +76,21 @@ class MarkerView: UIView, UITableViewDelegate, UITableViewDataSource {
         }
         self.tableView.reloadData()
     }
-    
+}
+
+extension MarkerView: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        arrayData.count
-        
-    }
+         arrayData.count
+         
+     }
+     
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+         guard let cell = tableView.dequeueReusableCell(withIdentifier: AnnotationTableViewCell.identifier, for: indexPath) as? AnnotationTableViewCell else {
+             fatalError("Unable to dequeue AnnotationTableViewCell")
+         }
+         let data = arrayData[indexPath.row]
+         cell.configure(type: data.name, description: data.description)
+         return cell
+     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: AnnotationTableViewCell.identifier, for: indexPath) as? AnnotationTableViewCell else {
-            fatalError("Unable to dequeue AnnotationTableViewCell")
-        }
-        let data = arrayData[indexPath.row]
-        cell.configure(type: data.name, description: data.description)
-        return cell
-    }
 }

@@ -13,6 +13,17 @@ enum Constants {
     static let textSearhFormat = "https://maps.googleapis.com/maps/api/place/textsearch/output?parameters"
     static let nearByPlace: [NearByPlaces] = [.gasStation, .aquarium, .atm, .bakery, .bank, .bar, .gym, .airport]
 }
+
+struct MainScreen {
+    var windowHeight: CGFloat {
+        return UIScreen.main.bounds.size.height
+    }
+    
+    var windowWidth: CGFloat {
+        return UIScreen.main.bounds.size.width
+    }
+}
+
 enum GooglePlaces {
     static let googleKey = "AIzaSyBHA5l7bOlJdhz-5aybKOyLuAl9Nug6kv8"
     static let BaseURL = "https://maps.googleapis.com/maps/api/place/textsearch/json"

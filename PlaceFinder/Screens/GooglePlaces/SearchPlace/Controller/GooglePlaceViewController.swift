@@ -65,6 +65,7 @@ extension GooglePlaceViewController: GMSMapViewDelegate {
         guard let marker = marker as? GMSPlaceMark else { return nil }
         guard  let viewMaker = UIView.viewNib("MarkerView") as? MarkerView  else {
             return nil }
+        viewMaker.sizeToFit()
         viewMaker.confiure(marker: marker)
         return viewMaker
     }
@@ -96,7 +97,7 @@ extension GooglePlaceViewController: UISearchBarDelegate {
     }
 }
 
-extension GooglePlaceViewController: LocationHandlerDelegate {
+extension GooglePlaceViewController: LocationHandlerProtocol {
     func received(location: CLLocation) {
         print(location)
     }
@@ -112,8 +113,6 @@ extension GooglePlaceViewController: ViewModelProtocol {
         if let currentPlace = placeIdDict[placeId], let coordinate = currentPlace.geometry?.location, let name = currentPlace.name {
             let marker = GMSPlaceMark(name: name, placeDetails: place, coordinate: coordinate)
             marker.map = googleMapView
-            print(placeId)
-            print(place)
         }
     }
     

@@ -48,6 +48,7 @@
                     <constraint firstItem="qEJ-Y4-2Z1" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="uBs-rW-3Aa"/>
                 </constraints>
             </tableViewCellContentView>
+            <accessibility key="accessibilityConfiguration" identifier="AnotationTableViewIdenfifier"/>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="descriptionLabel" destination="hT6-tf-jml" id="sMs-jz-6cZ"/>

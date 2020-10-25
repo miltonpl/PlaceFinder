@@ -29,7 +29,7 @@ class CategoriesDataSourc: UIViewController {
                     if let coordinates = placeMark?.first?.location?.coordinate {
                         print("coordinates ", coordinates)
                         DispatchQueue.main.async {
-                           let annotation = CustomAnnotation(coordinate: coordinates, title: placeName, subtitle: plceAddress)
+                           let annotation = CustomAnnotation(coordinate: coordinates, name: placeName, address: plceAddress)
                             print(annotation)
                             
 //                            self.mapView.addAnnotations([annotation])
