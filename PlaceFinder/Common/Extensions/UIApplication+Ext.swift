@@ -5,7 +5,9 @@
 //  Created by Milton Palaguachi on 10/18/20.
 //  Copyright © 2020 Milton. All rights reserved.
 //
+
 import UIKit
+
 extension UIApplication {
     func openSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) else { return }

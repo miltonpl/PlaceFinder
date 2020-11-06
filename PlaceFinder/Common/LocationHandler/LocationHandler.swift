@@ -32,7 +32,8 @@ class LocationHandler: NSObject {
         self.delegate = delegate
         super.init()
     }
-     // MARK: - Get User Location
+    
+    // MARK: - Get User Location
     func getUserLocation() {
         guard CLLocationManager.locationServicesEnabled() else {
             let title = "Location Disabled"
@@ -43,7 +44,7 @@ class LocationHandler: NSObject {
                     UIApplication.shared.openSettings()
                 case .cancel:
                     print("cancel")
-
+                    
                 default:
                     break
                 }
@@ -52,20 +53,19 @@ class LocationHandler: NSObject {
         }
         self.checkAndProntLocationAuthorization()
     }
-     // MARK: - Check and Pronto location Authorization
+    
+    // MARK: - Check and Pront location Authorization
     func checkAndProntLocationAuthorization() {
         let title = "Location Denied"
         let message = "Please give access to your location"
         let status = CLLocationManager.authorizationStatus()
         switch status {
         case .notDetermined:
-            print("//notDetermined")
             locationManager.requestAlwaysAuthorization()
             locationManager.requestLocation()
             locationManager.requestWhenInUseAuthorization()
             
         case .restricted, .denied:
-            print("//restricted, .denied:")
             delegate?.showAlert(title: title, message: message, buttons: [.cancel, .settings]) { _, type in
                 switch type {
                 case .settings:
@@ -78,26 +78,25 @@ class LocationHandler: NSObject {
         case .authorizedAlways, .authorizedWhenInUse:
             //get the user location
             self.locationManager.startUpdatingLocation()
-            print("//authorizedAlways, .authorizedWhenInUse:")
-            
         @unknown default:
             break
         }
     }
 }
- // MARK: - CLLocationManagerDelegate
+
+// MARK: - CLLocationManagerDelegate
 extension LocationHandler: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-          self.locationManager.stopUpdatingLocation()
+        self.locationManager.stopUpdatingLocation()
         delegate?.received(location: location)
-      }
+    }
     
-      func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         delegate?.locationDidFail(withError: error)
-      }
-      func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-          print("locationManager status: ", status.rawValue)
-      }
+    }
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print("locationManager status: ", status.rawValue)
+    }
 }
